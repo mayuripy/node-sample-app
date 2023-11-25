@@ -64,7 +64,7 @@ export const deleteUser = async (req, res) => {
         const payload = jwt.verify(authHeader, SECRET_KEY);
         console.log(payload);
         if (payload.id !== id) {
-            return res.statu(400).json({ message: "You cannot delete other user's account!"});
+            return res.statu(400).json({ message: "You cannot delete other user's account!" });
         }
         const user = await User.findById(id);
         if (!user) {
@@ -85,11 +85,12 @@ export const updateUser = async (req, res) => {
 
     try {
         const payload = jwt.verify(authHeader, SECRET_KEY);
-        
+
         // Check if the user making the request is the owner of the account
         if (payload.id !== id) {
             return res.status(403).json({ message: "You cannot update other user's account!" });
         }
+
 
         const user = await User.findById(id);
         if (!user) {
@@ -99,15 +100,17 @@ export const updateUser = async (req, res) => {
     }
     if (password) {
         user.password = password;
-    }
-        
 
-        
+
+
         await user.save();
 
         return res.status(200).json({ message: "User updated successfully" });
     } catch (error) {
         return res.status(400).json(error);
     }
+     finally{
+        
+     }
 }
 
