@@ -24,7 +24,7 @@ export { authRouter };
 
 // export { authRouter };if (username) {
             user.username = username;
-        }
+        
         if (password) {
             user.password = password;
         }

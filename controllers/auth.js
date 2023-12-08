@@ -1,3 +1,4 @@
+import { json } from "express";
 import { User } from "../models/index.js";
 import jwt from "jsonwebtoken";
 
@@ -78,39 +79,66 @@ export const deleteUser = async (req, res) => {
 
 }
 
-export const updateUser = async (req, res) => {
-    const authHeader = req.get("Authorization");
-    const { id } = req.params;
-    const { username, password } = req.body;
+// export const updateUser = async (req, res) => {
+//     const authHeader = req.get("Authorization");
+//     const { id } = req.params;
+//     const { username, password } = req.body;
 
-    try {
-        const payload = jwt.verify(authHeader, SECRET_KEY);
+//     try {
+//         const payload = jwt.verify(authHeader, SECRET_KEY);
 
-        // Check if the user making the request is the owner of the account
-        if (payload.id !== id) {
-            return res.status(403).json({ message: "You cannot update other user's account!" });
-        }
-
-
-        const user = await User.findById(id);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        user.username = username;
-    }
-    if (password) {
-        user.password = password;
+//         // Check if the user making the request is the owner of the account
+//         if (payload.id !== id) {
+//             return res.status(403).json({ message: "You cannot update other user's account!" });
+//         }
 
 
+//         const user = await User.findById(id);
+//         if (!user) {
+//             return res.status(404).json({ message: "User not found" });
+//         }
+//         user.username = username;
+//     }
+//     if (password) {
+//         user.password = password;
 
-        await user.save();
 
-        return res.status(200).json({ message: "User updated successfully" });
-    } catch (error) {
-        return res.status(400).json(error);
-    }
-     finally{
+
+//         await user.save();
+
+//         return res.status(200).json({ message: "User updated successfully" });
+//     } catch (error) {
+//         return res.status(400).json(error);
+//     }
+//      finally{
         
-     }
-}
+//      }
+// }
 
+
+export const updateUser=async (req,res) => {
+    const{id}= req.params;
+    const userId =req.userId;
+
+    try{
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({message:"user is note found"})
+        }
+        
+
+        if (userId!==id){
+            return res.status(400),json({message:"you can not updated"})
+        }
+        const updateUserData =await user.save();
+        Object.assiggn(user.updateUserData);
+
+        const updateUser =await user.save();
+        return res.status(500).json(updateUserData);
+
+    }catch(error){
+        return res.statuse(500).json(error);
+
+    }
+
+}
